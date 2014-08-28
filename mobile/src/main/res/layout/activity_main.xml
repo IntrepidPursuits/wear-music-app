@@ -1,0 +1,63 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/text_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:text="@string/hr"
+        android:textSize="20sp" />
+
+
+    <TextView
+        android:id="@+id/heart_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/text_box"
+        android:text="76"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/go_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="40dp"
+        android:layout_toRightOf="@+id/heart_rate"
+        android:gravity="center"
+        android:text="GO" />
+
+    <TextView
+        android:id="@+id/artist_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/heart_rate"
+        android:padding="5dp"
+        android:text="@string/artist" />
+
+    <TextView
+        android:id="@+id/track_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/heart_rate"
+        android:layout_toLeftOf="@+id/artist_name"
+        android:padding="5dp"
+        android:text="@string/track" />
+
+    <ListView
+        android:id="@+id/echonest_info_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/track_name" />
+
+</RelativeLayout>
