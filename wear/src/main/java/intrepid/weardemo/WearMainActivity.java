@@ -8,6 +8,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
+import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +24,6 @@ import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WearMainActivity extends Activity implements SensorEventListener {
@@ -85,6 +85,10 @@ public class WearMainActivity extends Activity implements SensorEventListener {
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensor = mSensorManager.getDefaultSensor(65562); //Higher accuracy than default sensor
+
+        GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
+        WearPagerAdapter adapter = new WearPagerAdapter(getFragmentManager());
+        pager.setAdapter(adapter);
     }
 
     private void startVoiceRecognition() {

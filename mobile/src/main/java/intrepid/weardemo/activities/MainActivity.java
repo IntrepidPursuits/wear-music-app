@@ -89,6 +89,8 @@ public class MainActivity extends Activity implements PlayerNotificationCallback
         public void finishedRetrievingAnalysis(TrackAnalysis analysis);
     }
 
+    private final static boolean USE_SIMILAR_ARTISTS = true;
+
     private Playlists playlists;
     private ServiceConnection connection;
 
@@ -160,7 +162,7 @@ public class MainActivity extends Activity implements PlayerNotificationCallback
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EchonestUtils.searchForTracksByArtist(echoNestAPI, "aerodynamic", "daft punk", MainActivity.this);
+                EchonestUtils.searchForTracksByArtist(echoNestAPI, "hearts on fire", "cut copy", MainActivity.this);
             }
         });
 
@@ -310,6 +312,8 @@ public class MainActivity extends Activity implements PlayerNotificationCallback
         if (!SpotifyUtils.getSpotifyTrack(queue.getCurrentlyIndexedSong(), MainActivity.this)) {
             queue.incrementSongChoiceIndex();
             checkForNoSpotifyData();
+        } else {
+            queue.resetArtistChoiceIndex();
         }
     }
 
@@ -332,6 +336,7 @@ public class MainActivity extends Activity implements PlayerNotificationCallback
             checkForSimilarArtist(artists);
         } else {
             queue.updateArtistCount(name);
+            queue.setArtistList(artists);
             EchonestUtils.searchForTracksByArtist(echoNestAPI, "", name, MainActivity.this);
         }
     }
@@ -342,8 +347,26 @@ public class MainActivity extends Activity implements PlayerNotificationCallback
 
     @Override
     public void tracksReturned(List<Song> songs) {
-        queue.setCurrentENSongChoices(songs);
-        checkForNoSpotifyData();
+        if (songs != null && songs.size() > 0) {
+            queue.setCurrentENSongChoices(songs);
+            checkForNoSpotifyData();
+        } else {
+            Log.d("Null", "No songs"); //TODO: Plan for no songs to be
+            Toast.makeText(this, "No Songs Found", Toast.LENGTH_LONG).show();
+            if (queue.getCurrentENSongChoices() != null && queue.getCurrentENSongChoices().size() > 0) {
+                try {
+                    if (USE_SIMILAR_ARTISTS) {
+                        queue.incrementArtistChoiceIndex();
+                        EchonestUtils.searchForTracksByArtist(echoNestAPI, null, queue.getArtistList().get(queue.getArtistChoiceIndex()).getName(), this);
+                    } else {
+                        queue.incrementSongChoiceIndex();
+                        EchonestUtils.getSimilarSongs(echoNestAPI, queue.getCurrentlyIndexedSong().getID(), queue.getCurrentlyIndexedSong().getArtistID(), MainActivity.this);
+                    }
+                } catch (EchoNestException e) {
+                    Log.e("errrrr", e.getMessage());
+                }
+            }
+        }
     }
 
     @Override
@@ -355,12 +378,11 @@ public class MainActivity extends Activity implements PlayerNotificationCallback
     public void success(SpotifyTrack spotifyTrack, Response response) {
         queue.setCurrentTrack(spotifyTrack);
 
-        if (queue.currentTrackIsLive() || queue.currentTrackExistsInQueue() || queue.currentTrackFromCompilation() || queue.notAvailableInUS()) {
+        if (songIsValid()) {
             queue.incrementSongChoiceIndex();
             checkForNoSpotifyData();
         } else {
             queue.addCurrentTrackUriToList();
-            queue.resetSongChoiceIndex();
 
             if (mPlayer != null && !mPlayer.isPlaying()) {
                 mPlayer.play(queue.getCurrentTrackUri());
@@ -371,9 +393,20 @@ public class MainActivity extends Activity implements PlayerNotificationCallback
 
             queue.incrementCurrentSize();
             if (queue.getSize() < 10) {
-                EchonestUtils.getSimilarArtists(echoNestAPI, queue.getCurrentTrack(), MainActivity.this);
+                if (USE_SIMILAR_ARTISTS) {
+                    EchonestUtils.getSimilarArtists(echoNestAPI, queue.getCurrentTrack(), MainActivity.this);
+                } else {
+                    EchonestUtils.getSimilarSongs(echoNestAPI, queue.getCurrentlyIndexedSong().getID(), queue.getCurrentlyIndexedSong().getArtistID(), MainActivity.this);
+                }
+                queue.resetSongChoiceIndex();
+
             }
         }
+    }
+
+    private boolean songIsValid() {
+        return queue.currentTrackIsLive() || queue.currentTrackExistsInQueue() || queue.currentTrackFromCompilation() /*|| queue.notAvailableInUS()*/
+                || ((queue.getCurrentQueueSize() == 0) && queue.getCurrentTrack().getName().toLowerCase().contains("remix"));
     }
 
     @Override

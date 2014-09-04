@@ -5,12 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import echonest.v4.ENItem;
-import echonest.v4.EchoNestAPI;
-import echonest.v4.EchoNestException;
-import echonest.v4.Location;
-import echonest.v4.Track;
-import echonest.v4.TrackAnalysis;
 import echonest.v4.util.Commander;
 
 public class Song extends ENItem {
@@ -79,10 +73,14 @@ public class Song extends ENItem {
         return getString("release_image");
     }
 
-    public String getSpotifyUri() {
-        String uri = getString("tracks[0].foreign_id");
+    public String getSpotifyUri(int index) {
+        String uri = getString("tracks[" + index + "].foreign_id");
         String[] words = uri.split(":");
         return words[words.length - 1];
+    }
+
+    public Map<String, Track> getTrackMap() {
+        return trackMap;
     }
 
     public Location getArtistLocation() throws EchoNestException {

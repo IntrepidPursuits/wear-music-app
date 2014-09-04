@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import echonest.v4.Artist;
 import echonest.v4.Song;
 import intrepid.weardemo.utils.CustomUtils;
 import spotify.models.SpotifyTrack;
@@ -21,6 +22,7 @@ public class CustomQueue {
     private HashMap<String, Boolean> uriMap = new HashMap<String, Boolean>();
     private HashMap<String, Integer> artistCount = new HashMap<String, Integer>();
     private List<Song> currentENSongChoices = new ArrayList<Song>();
+    private List<Artist> artistList = new ArrayList<Artist>();
 
     private SpotifyTrack currentTrack;
 
@@ -148,5 +150,13 @@ public class CustomQueue {
 
     public void setCurrentENSongChoices(List<Song> currentENSongChoices) {
         this.currentENSongChoices = currentENSongChoices;
+    }
+
+    public List<Artist> getArtistList() {
+        return artistList;
+    }
+
+    public void setArtistList(List<Artist> artistList) {
+        this.artistList = artistList;
     }
 }
