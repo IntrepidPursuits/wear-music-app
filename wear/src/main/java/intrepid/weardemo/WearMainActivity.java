@@ -87,7 +87,7 @@ public class WearMainActivity extends Activity implements SensorEventListener {
         mSensor = mSensorManager.getDefaultSensor(65562); //Higher accuracy than default sensor
 
         GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
-        WearPagerAdapter adapter = new WearPagerAdapter(getFragmentManager());
+        WearPagerAdapter adapter = new WearPagerAdapter(getFragmentManager(), null);
         pager.setAdapter(adapter);
     }
 

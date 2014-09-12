@@ -167,7 +167,7 @@ public class MainActivity extends Activity implements PlayerNotificationCallback
         });
 
         setupEchonest();
-        setupSpotify();
+//        setupSpotify();
     }
 
     @Override
